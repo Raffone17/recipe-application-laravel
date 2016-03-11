@@ -1,0 +1,99 @@
+html, body{
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.counter{
+	margin-right: 10px;
+}
+.form-group{
+	margin-top: 3%;
+
+}
+.ingredients-box{
+	margin: 10px 0px;
+}
+.box-ingredient{
+	background-color: #dad8d8;
+	display: inline-block;
+	border-radius:5px;
+	margin:2px;
+	padding: 3px;
+	margin-top:5px;
+}
+
+.box-ingredient a{
+	margin-left:2px;
+	background-color:#f3f2f2;
+	padding:0px 4px;
+}
+.box-ingredient a:hover{
+	cursor: pointer; 
+}
+.minusingredient{
+	height:20px;
+	margin-left:2px;
+	/*background-color:#f3f2f2;*/
+	padding:0px 4px;
+}
+#description{
+   
+	margin-bottom: 10px;
+}
+.description-box{
+	height:150px;
+	white-space: inherit;
+	 overflow: hidden;
+	  text-overflow: ellipsis; 
+    
+}
+
+.recipe-box{
+	/*min-height:500px;*/
+	margin:13px;
+	padding:7px;
+	background-color:#e7e4e4;
+	border-radius:20px;
+	color:black;
+
+	
+
+}
+.recipe-box img{
+	height:200px;
+}
+.marginBottom15{
+	margin-bottom:15px;
+}
+.displayinline{
+	display: inline-block;
+}
+
+.recipe-box-show{
+	/*min-height:500px;*/
+	margin:13px;
+	padding:7px;
+	background-color:#e7e4e4;
+	border-radius:20px;
+	color:black;
+	
+
+}
+hr{
+border:solid 2px #b7aeae;
+}
+
+#button-ingredient{
+	margin-bottom: 20px;
+}
+
+#ingredients{
+	color:black;
+}
+
+.font-15-b{
+	margin: 0px 4px;
+	font-size:15px;
+	font-weight:bold;
+}
