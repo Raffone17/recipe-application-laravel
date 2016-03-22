@@ -47,8 +47,12 @@ Route::group(['middleware' => 'web'], function () {
         Route::delete('/recipe/{id}',['as'=>'recipe.destroy','uses'=>'RecipeController@destroy']);
         
         Route::group(['middleware' => 'admin'], function(){
-            Route::get('/admin',['as'=>'admin.index','uses'=>'UserController@admin']);
+            Route::get('/admin',['as'=>'admin.index','uses'=>'AdminController@index']);
+            Route::get('/admin/recipe',['as'=>'admin.recipe','uses'=>'AdminController@recipe']);
+            Route::get('/admin/ingredient',['as'=>'admin.ingredient','uses'=>'AdminController@ingredient']);
+            Route::get('/admin/user',['as'=>'admin.user','uses'=>'AdminController@user']);
         });
+        
     });
     
     
@@ -56,6 +60,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/search/title',['as'=>'search.title','uses'=>'SearchController@searchTitle']);
     Route::get('/search/ingredient',['as'=>'search.ingredient','uses'=>'SearchController@searchIngredient']);
     
-    //Route::get('/{path?}', function(){ return view("errors.404"); })->where('path', '.+');
+    
     
 });

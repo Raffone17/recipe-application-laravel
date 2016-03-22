@@ -21,7 +21,7 @@ class CreateRecipesTable extends Migration
             //
             //
             $table->string('difficult');
-            $table->int('minuti')->nullable;
+            $table->integer('minuti')->nullable;
             $table->timestamps();
         });
         

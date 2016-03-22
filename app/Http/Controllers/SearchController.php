@@ -23,12 +23,21 @@ class SearchController extends Controller
              'search' => 'required'
              ]);
         $category = Category::where('name', $request->search )->first();
+        $user = User::where('name', $request->search)->first();
         if($category != null){
-            $recipes = Recipe::where('category_id',$category->id)->get();
+            $recipes = Recipe::where('category_id',$category->id)->paginate(6);
             $statusinfo = 'Recetta della categoria: "'.$request->search.'"';
-        }else{
-            $recipes = Recipe::where('title', 'like', '%'.$request->search.'%')->get();
+            $recipes->appends(['search' => $request->search])->links();
+        
+        }else if($user != null){
+            $recipes = Recipe::where('user_id',$user->id)->paginate(6);
+            $statusinfo = 'Recetta dell\'utente : "'.$request->search.'"';
+            $recipes->appends(['search' => $request->search])->links();
+        }
+        else{
+            $recipes = Recipe::where('title', 'like', '%'.$request->search.'%')->paginate(6);
             $statusinfo = 'Ricerca ricette per nome: "'.$request->search.'"';
+            $recipes->appends(['search' => $request->search])->links();
         }
         
          return view('recipe.index' ,['recipes' => $recipes, 'statusinfo' => $statusinfo ]);
@@ -44,9 +53,9 @@ class SearchController extends Controller
              ]);
         $recipes = DB::table('recipes')->join('ingredient_to_recipes','recipes.id','=','ingredient_to_recipes.recipe_id')
         ->join('ingredients', 'ingredient_to_recipes.ingredient_id', '=', 'ingredients.id')->where('ingredients.name', 'like', '%'.$request->ingredient.'%')
-        ->get(array('recipes.id','recipes.title','recipes.description','recipes.category_id','recipes.user_id','recipes.difficult','recipes.created_at'));
-        
-        
+        ->select('recipes.id','recipes.title','recipes.description','recipes.category_id','recipes.user_id','recipes.difficult','recipes.created_at')->paginate(6);
+
+        $recipes->appends(['ingredient' => $request->ingredient])->links();
         
         return view('recipe.index' ,['recipes' => $recipes ,'statusinfo' => 'Ricette contenenti l\'ingrediente: "'.$request->ingredient.'"' ]);
         

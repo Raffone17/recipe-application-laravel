@@ -2,7 +2,9 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews
     </IfModule>
-
+    
+ 
+    
     RewriteEngine On
 
     # Redirect Trailing Slashes If Not A Folder...
@@ -17,4 +19,8 @@
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "http://bootstrap-live-customizer.com"
 </IfModule>

@@ -13,8 +13,8 @@
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{asset('assets/css/theme1.min.css')}}" rel="stylesheet" type='text/css'>
-    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type='text/css'>
+    <link href="{{asset('assets/css/theme1.min.css',true)}}" rel="stylesheet" type='text/css'>
+    <link href="{{asset('assets/css/style.css',true)}}" rel="stylesheet" type='text/css'>
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
     <style>
@@ -106,13 +106,17 @@
                 {{ $statusinfo }}
             </div>
         @endif
-      @if($errors->any())
-            <ul class="alert alert-danger">
-                @foreach ($errors->all() as $error)
-                    <li>{{$error}}</li>
-                @endforeach
-            </ul>
-            
+       @if(isset($errors))
+          @if($errors->any())
+                <ul class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        @if(isset($error))
+                            <li>{{$error}}</li>
+                        @endif
+                    @endforeach
+                </ul>
+                
+            @endif 
         @endif
         </div>
     </div>

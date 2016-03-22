@@ -3,7 +3,7 @@
 @section('content')
     
    
-        <?php $i=0; ?>
+        
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
@@ -24,12 +24,15 @@
                         </div>
                     </div>
                 </div>
-                  
+                </div>
+                <div class="container">
+                    <?php $i = 0; ?>
+                   <div class="row recipe-list">
                           @foreach ($recipes as $recipe)
-                            @if ($i === 0 || $i%3 === 0)
-                            </div>
-                            <div class="row recipe-list">
-                            @endif
+                           @if ( $i != 0 && $i%3 == 0)
+                           </div>
+                           <div class="row recipe-list">
+                           @endif
                            <div class="col-sm-4">
                                <div class="recipe-box">
                                       @if (file_exists('assets/img/recipe/'.$recipe->id.'.jpg'))
@@ -70,6 +73,10 @@
             @endforeach
             
             </div>
+            </div>
+            
+            
+            {!! $recipes->render() !!}
              
     </div>
 @endsection

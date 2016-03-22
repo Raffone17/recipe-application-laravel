@@ -23,8 +23,8 @@ class RecipeController extends Controller
      */
     public function index()
     {
-        $recipes= Recipe::all()->take(100);
-       
+        $recipes= Recipe::paginate(6);
+      
         
         return view('recipe.index' ,['recipes' => $recipes]);
     }
@@ -127,13 +127,18 @@ class RecipeController extends Controller
      */
     public function show($id)
     {
-       
-        $recipe= Recipe::find($id);
-        
-        $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
-      
-        
-        return view('recipe.show' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes]);
+       $recipe= Recipe::find($id);
+            if($recipe != null ){
+                
+            
+                $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
+                return view('recipe.show' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes]);
+            }else{
+            
+                
+            
+                return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
+            }
     }
 
     /**
@@ -146,12 +151,15 @@ class RecipeController extends Controller
     {
         $recipe= Recipe::find($id);
         $categories = Category::all();
-        
-        $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
-        if(Auth::id()==$recipe->user_id){
-            return view('recipe.edit' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes, 'categories' => $categories]);
+        if($recipe != null){
+            $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
+            if(Auth::id()==$recipe->user_id){
+                return view('recipe.edit' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes, 'categories' => $categories]);
+            }else{
+                return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per modificare questa ricetta!');
+            }
         }else{
-            return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per modificare questa ricetta!');
+            return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
         }
     }
 
@@ -266,19 +274,24 @@ class RecipeController extends Controller
     {
         //
         $recipe= Recipe::find($id);
-        $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
-        
-        if(Auth::id()==$recipe->user_id){
-            foreach($ingredients_to_recipes as $ingredient_to_recipe ){
-                $destroy_inToRecipe= Ingredient_to_recipe::find($ingredient_to_recipe->id);
-                    
-                $destroy_inToRecipe->delete();
-            }
-            $recipe->delete();
+        if($recipe != null){
+            $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
             
-            return redirect()->route('recipe.index')->with('status', 'Hai eliminato la riccetta con successo!');
+            if(Auth::id()==$recipe->user_id){
+                foreach($ingredients_to_recipes as $ingredient_to_recipe ){
+                    $destroy_inToRecipe= Ingredient_to_recipe::find($ingredient_to_recipe->id);
+                        
+                    $destroy_inToRecipe->delete();
+                }
+                $recipe->delete();
+                
+                return redirect()->route('recipe.index')->with('status', 'Hai eliminato la riccetta con successo!');
+            }else{
+                return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per eliminare questa ricetta!');
+            }
         }else{
-            return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per eliminare questa ricetta!');
+            
+            return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
         }
     }
 }
