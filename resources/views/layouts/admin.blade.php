@@ -9,13 +9,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Admin - {{ $site_name=App\Setting::first()->site_name }}</title>
 
     <!-- Bootstrap Core CSS -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{{asset('assets/css/sb-admin.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/sb-admin.css',true)}}" rel="stylesheet">
+    <link href="{{asset('assets/css/style.css',true)}}" rel="stylesheet" type='text/css'>
 
     <!-- Morris Charts CSS -->
     <link href="{{asset('assets/css/plugins/morris.css')}}" rel="stylesheet">
@@ -46,7 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ route('admin.index') }}">SB Admin</a>
+                <a class="navbar-brand" href="{{ route('admin.index') }}">Admin {{ $site_name }}</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -134,13 +135,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ ucfirst(Auth::user()->name) }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                            <a href="{{ route('user.show',['id' => Auth::id()]) }}"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                            <a href="{{ route('admin.setting') }}"><i class="fa fa-fw fa-gear"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -152,30 +153,30 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
+                    <li {{{ (Request::is('admin') ? 'class=active' : '') }}} >
                         <a href="{{ route('admin.index') }}"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a href="{{route('admin.recipe') }}"><i class="fa fa-fw fa-bar-chart-o"></i> Ricette</a>
+                    <li {{{ (Request::is('admin/recipe') ? 'class=active' : '') }}} >
+                        <a href="{{route('admin.recipe') }}"><i class="fa fa-fw fa-cutlery"></i> Ricette</a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.ingredient') }}"><i class="fa fa-fw fa-table"></i> Ingredienti</a>
+                    <li {{{ (Request::is('admin/ingredient') ? 'class=active' : '') }}} >
+                        <a href="{{ route('admin.ingredient') }}"><i class="fa fa-fw fa-shopping-cart"></i> Ingredienti</a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.user') }}"><i class="fa fa-fw fa-edit"></i> Utenti</a>
+                    <li {{{ (Request::is('admin/user') ? 'class=active' : '') }}} >
+                        <a href="{{ route('admin.user') }}"><i class="fa fa-fw fa-users"></i> Utenti</a>
                     </li>
-                    <li>
-                        <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Categorie</a>
+                    <li {{{ (Request::is('admin/category') ? 'class=active' : '') }}} >
+                        <a href="{{ route('admin.category') }}"><i class="fa fa-fw fa-tags"></i> Categorie</a>
                     </li>
-                    <li>
-                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Impostazioni</a>
+                    <li {{{ (Request::is('admin/setting') ? 'class=active' : '') }}} >
+                        <a href="{{ route('admin.setting') }}"><i class="fa fa-fw fa-wrench"></i> Impostazioni</a>
                     </li>
                     
-                    <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Crea Ricetta</a>
+                    <li {{{ (Request::is('recipe/create') ? 'class=active' : '') }}} >
+                        <a href="{{ route('recipe.create') }}"><i class="fa fa-fw fa-file"></i> Crea Ricetta</a>
                     </li>
-                    <li>
-                        <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
+                    <li {{{ (Request::is('/') ? 'class=active' : '') }}} >
+                        <a href="{{ url('/home') }}"><i class="fa fa-fw fa-laptop "></i> Vedi il sito</a>
                     </li>
                 </ul>
             </div>
@@ -183,6 +184,37 @@
         </nav>
 
         <div id="page-wrapper" >
+            <div class="container">
+        <div class="row">
+         @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+        @if (session('status-warning'))
+            <div class="alert alert-warning">
+                {{ session('status-warning') }}
+            </div>
+            @endif
+        @if(isset($statusinfo))
+              <div class="alert alert-info">
+                {{ $statusinfo }}
+            </div>
+        @endif
+       @if(isset($errors))
+          @if($errors->any())
+                <ul class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        @if(isset($error))
+                            <li>{{$error}}</li>
+                        @endif
+                    @endforeach
+                </ul>
+                
+            @endif 
+        @endif
+        </div>
+    </div>
          @yield('content')
            
             <!-- /.container-fluid -->
@@ -201,11 +233,15 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <!-- Morris Charts JavaScript -->
+        
     <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/morris/raphael.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/morris/morris.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/morris/morris-data.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    
+    <!-- Personal Scripts -->
+
 
 </body>
 

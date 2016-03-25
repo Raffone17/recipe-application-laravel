@@ -19,7 +19,7 @@
                @foreach ($users as $user)
                 <tr>
                   <th scope="row">{{ $user->id }}</th>
-                  <td>{{ $user->name }}</td>
+                  <td><a href="{{ route('user.show', ['id' => $user->id]) }}" >{{ $user->name }}</a></td>
                   <td>{{ $user->email }}</td>
                   <td>{{ date('d-m-Y',strtotime($user->created_at)) }}</td>
                   <td>{{ App\Recipe::where('user_id',$user->id)->count() }}</td>
@@ -29,6 +29,7 @@
                         Utente 
                        @endif
                </td>
+               <td><a class="btn btn-warning pull" href="{{ route('user.edit', ['id' => $user->id]) }}">Modifica</a></td>
                 </tr>
                @endforeach
           </tbody>

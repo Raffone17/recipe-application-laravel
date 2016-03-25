@@ -1,10 +1,22 @@
-@extends('layouts.app')
+<?php 
+if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
+	
+	if(Auth::user()->isAdmin() ){
+		$var = true;
+	}else{
+		$var = false;
+	}
+}else{
+	$var = false;
+}
+?>
+@extends($var ? 'layouts/admin' : 'layouts/app') 
 
 @section('content')
     
     	<div class="container">
 			<div class="row">
-				<h1>Crea una ricetta</h1>
+				<h1>Modifica la ricetta</h1>
 				{!! Form::open(['method'=>'PUT','id'=>'recipe_form', 'name'=>'create_recipe','route' => array('recipe.update', $recipe->id),'enctype' => 'multipart/form-data']) !!}
        			 <div class="form-group col-sm-8">
        			     <label class="control-label" for="title"><--Immagine attuale</label>

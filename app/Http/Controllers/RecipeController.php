@@ -11,8 +11,10 @@ use App\Recipe;
 use App\Category;
 use App\Ingredient_to_recipe;
 use App\Ingredient;
+use App\Setting;
 
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class RecipeController extends Controller
 {
@@ -21,9 +23,22 @@ class RecipeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    protected $paginate;
+    
+    public function __construct()
+    {
+        $this->paginate = Setting::first()->paginate_recipe;
+
+    } 
+    
+     
     public function index()
     {
-        $recipes= Recipe::paginate(6);
+        $recipes = Recipe::paginate($this->paginate);
+      
+       
+       
+            
       
         
         return view('recipe.index' ,['recipes' => $recipes]);
@@ -55,8 +70,8 @@ class RecipeController extends Controller
         
         
         $this->validate($request, [
-        'title' => 'required',
-        'description' => 'required',
+        'title' => 'required | min:3',
+        'description' => 'required | min:10',
         'category' => 'required',
         'difficult' => 'required',
         'imageToUpload' => 'image|max:400',
@@ -115,8 +130,15 @@ class RecipeController extends Controller
                 $error_image="";
             }
      
- 
-    	return redirect()->route('recipe.index')->with('status', 'Riccetta Aggiunta!'.$error_image);
+        if(Auth::user()->isAdmin()){
+            
+            return redirect()->route('recipe.show',[$recipe_id])->with('status', 'Riccetta Aggiunta!'.$error_image);
+            
+        }else{
+            
+    	    return redirect()->route('recipe.show',[$recipe_id])->with('status', 'Riccetta Aggiunta!'.$error_image);
+    	
+        }
     }
 
     /**
@@ -153,13 +175,17 @@ class RecipeController extends Controller
         $categories = Category::all();
         if($recipe != null){
             $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
-            if(Auth::id()==$recipe->user_id){
+            if(Auth::id()==$recipe->user_id || Auth::user()->isAdmin() ){
                 return view('recipe.edit' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes, 'categories' => $categories]);
             }else{
                 return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per modificare questa ricetta!');
             }
         }else{
-            return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
+            if( Auth::user()->isAdmin() ){
+                return redirect()->route('admin.index')->with('status-warning', 'Ricetta non trovata!');
+            }else{
+                return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
+            }
         }
     }
 
@@ -173,14 +199,15 @@ class RecipeController extends Controller
     public function update(Request $request, $id)
     {
          $this->validate($request, [
-        'title' => 'required',
-        'description' => 'required',
+        'title' => 'required | min:3 ',
+        'description' => 'required | min:10',
         'category' => 'required',
         'difficult' => 'required',
+        'imageToUpload' => 'image|max:400',
         ]);
         
         $recipe = Recipe::find($id);
-        if($recipe->user_id == Auth::id()){
+        if($recipe->user_id == Auth::id() || Auth::user()->isAdmin() ){
             $recipe->title = $request->title;
             $recipe->description = $request->description;
             
@@ -257,8 +284,11 @@ class RecipeController extends Controller
             if(!isset($error_image)){
                 $error_image="";
             }
-     
-        	return redirect()->route('recipe.show',[$id])->with('status', 'Riccetta Modificata con successo!'.$error_image);
+            if( Auth::user()->isAdmin() ){
+                return redirect()->route('admin.recipe')->with('status', 'Riccetta Modificata con successo!'.$error_image);
+            }else{
+        	    return redirect()->route('recipe.show',[$id])->with('status', 'Riccetta Modificata con successo!'.$error_image);
+            }
         }else{
             return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per modificare questa ricetta!');
         }
@@ -277,21 +307,27 @@ class RecipeController extends Controller
         if($recipe != null){
             $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
             
-            if(Auth::id()==$recipe->user_id){
+            if(Auth::id()==$recipe->user_id || Auth::user()->isAdmin() ){
                 foreach($ingredients_to_recipes as $ingredient_to_recipe ){
                     $destroy_inToRecipe= Ingredient_to_recipe::find($ingredient_to_recipe->id);
                         
                     $destroy_inToRecipe->delete();
                 }
                 $recipe->delete();
-                
-                return redirect()->route('recipe.index')->with('status', 'Hai eliminato la riccetta con successo!');
+                if( Auth::user()->isAdmin() ){
+                    return redirect()->route('admin.index')->with('status', 'Hai eliminato la riccetta con successo!');
+                }else{
+                    return redirect()->route('recipe.index')->with('status', 'Hai eliminato la riccetta con successo!');
+                }
             }else{
                 return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per eliminare questa ricetta!');
             }
         }else{
-            
-            return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
+             if( Auth::user()->isAdmin() ){
+                 return redirect()->route('admin.index')->with('status-warning', 'Ricetta non trovata!');
+             }else{
+                return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
+             }
         }
     }
 }

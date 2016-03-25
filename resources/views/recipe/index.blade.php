@@ -36,25 +36,28 @@
                            <div class="col-sm-4">
                                <div class="recipe-box">
                                       @if (file_exists('assets/img/recipe/'.$recipe->id.'.jpg'))
-                                <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg')}}" alt="recipe image" class="img-responsive fix-height-150" />
+                                <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg',true )}}" alt="recipe image" class="img-responsive " />
                                 @else
-                                <img src="{{asset('assets/img/recipe/default.png')}}" alt="recipe image" class="img-responsive fix-height-150" />
+                                <img src="{{asset('assets/img/recipe/default.png',true )}}" alt="recipe image" class="img-responsive " />
                                 @endif
                                 
                                 <h4 class="media-heading"> {{ $recipe->title }}</h4>
-                                <p class="text-right">Autore: {{ $user = App\User::findOrFail($recipe->user_id)->name }}</p>
+                                <div class="text-left">Categoria: {{ ucfirst($recipe->category->name) }}</div><div class="text-right">Autore: {{ $recipe->user->name }}</div><br>
                                <div class="description-box">
                                 
                                     {{ str_limit( $recipe->description, 320, $end= '...' ) }}
                                
                                </div>  
                    <hr>             
-                <ul class="list-inline list-unstyled">
+                <ul class="list-inline list-unstyled font-14" >
                     
               <!--  $recipe->created_at->format('d-m-Y')  -->
   			<li><span><i class="glyphicon glyphicon-calendar"></i>{{ date('d-m-Y',strtotime($recipe->created_at)) }}</span></li>
             <li>|</li>
-            <span><i class=" glyphicon glyphicon-sort-by-attributes"></i>{{App\Ingredient_to_recipe::where('recipe_id',$recipe->id)->count()}}ingredienti</span>
+            <span><i class=" glyphicon glyphicon-sort-by-attributes"></i>
+            
+            {{ $recipe->ingredient_to_recipes->count() }}ingredienti</span>
+            
             <li>|</li>
             <li>
                 <span class="glyphicon glyphicon-tasks"></span>

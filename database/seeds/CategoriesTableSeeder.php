@@ -12,17 +12,17 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $categories = array("antipasti", "primi", "contorni", "secondi" , "dolci e dessert");
+        $categories = array("antipasti", "primi", "secondi" , "dolci e dessert");
         foreach($categories as $category){
             /*DB::table('categories')->insert([
                 'name' => $category,
-            
+
             ]);*/
-            
+
             $model = new Category;
             $model->name = $category;
             $model->save();
-                
+
         }
     }
 }

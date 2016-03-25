@@ -8,6 +8,8 @@ use App\Http\Requests;
 use App\User;
 use App\Recipe;
 
+use Illuminate\Support\Facades\Auth;
+
 class UserController extends Controller
 {
     /**
@@ -51,9 +53,17 @@ class UserController extends Controller
     {
         //
         $user= User::where('id', $id)->first(['id','name','email','role','created_at']);
-        $recipes = User::find($id)->recipes;
         
-        return view('user.show' ,['user' => $user,'recipes' => $recipes]);
+        if($user != null){
+            
+            $recipes = User::find($id)->recipes;
+            
+            return view('user.show' ,['user' => $user,'recipes' => $recipes]);
+            
+        }else{
+            
+            return redirect()->back()->with('status-warning', 'Utente non trovato!');
+        }
     }
 
     /**
@@ -65,6 +75,18 @@ class UserController extends Controller
     public function edit($id)
     {
         //
+        $user = User::find($id);
+        
+        if($user != null){
+            if($user->id == Auth::id() || Auth::user()->isAdmin() ){
+                return view('user.edit' ,['user' => $user]);
+            }else{
+                return redirect()->back()->with('status-warning', 'Non hai i permessi per modificare l\'utente!');
+            }
+        }else{
+            
+            return redirect()->back()->with('status-warning', 'Utente non trovato!');
+        }
     }
 
     /**
@@ -76,7 +98,42 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+        'name' => 'required | min:3',
+        'email' => 'required | email | min:6',
+        'password' => 'min:5',
+        ]);
+        
+        $status = null;
+        
+        $user = User::find($id);
+        if($user != null && $user->id == Auth::id() || Auth::user()->isAdmin()){
+            $user->name = $request->name;
+            $user->email = $request->email;
+            if(isset($request->password)){
+                if($request->password == $request->password2){
+                    $user->password = bcrypt($request->password);
+                    
+                }else{
+                    $status = "Le passowrd non corrispondono!";
+                    return redirect()->back()->with('status-warning', $status);
+                }
+            }
+            
+            if(isset($request->role) && ($request->role == 1 || $request->role == 2) ){
+                $user->role = $request->role;
+            }
+            
+            $user->save();
+            if( Auth::user()->isAdmin() ){
+                return redirect()->route('admin.user')->with('status', "Utente modificato con successo!");
+            }else{
+                return redirect()->route('user.show',[$id])->with('status', "Utente modificato con successo!");
+            }
+            
+        }else{
+            return redirect()->route('user.show',[$id])->with('status-warning', "Utente non trovato oppure non hai i permessi!");
+        }
     }
 
     /**

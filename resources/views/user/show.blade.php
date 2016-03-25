@@ -1,34 +1,34 @@
-@extends('layouts.app')
+<?php 
+if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
+	
+	if(Auth::user()->isAdmin() ){
+		$var = true;
+	}else{
+		$var = false;
+	}
+}else{
+	$var = false;
+}
+?>
+@extends($var ? 'layouts/admin' : 'layouts/app') 
 
 @section('content')
     
-    @if (session('status'))
-            <div class="alert alert-success">
-                {{ session('status') }}
-            </div>
-        @endif
-        
-      @if($errors->any())
-            <ul class="alert alert-danger">
-                @foreach ($errors->all() as $error)
-                    <li>{{$error}}</li>
-                @endforeach
-            </ul>
-            
-        @endif
+    
         <div class="container">
         <div class="row">
           <div class="col-sm-6">
+              <br><br>
                <i class="glyphicon glyphicon-user"></i><label class="control-label font-15-b"> Nome: </label>  {{ $user->name }}<br>
                <i class="glyphicon glyphicon-envelope"></i><label class="control-label font-15-b"> Email: </label>  {{ $user->email }}<br>
-               <i class="lyphicon glyphicon-lock"></i><label class="control-label font-15-b"> Tipo utente: </label>
+               <i class="glyphicon glyphicon-lock"></i><label class="control-label font-15-b"> Tipo utente: </label>
                @if( $user->role == 2)
                 Amministratore<br>
                @else
-                Utente<br> 
+                Utente<br>
                @endif
-               <i class="glyphicon glyphicon-calendar"></i><label class="control-label  font-15-b ">Data iscrizione:</label> {{ $user->created_at->format('d-m-Y') }}<br>
-               
+               <i class="glyphicon glyphicon-calendar"></i><label class="control-label  font-15-b ">Data iscrizione:</label> {{ $user->created_at->format('d-m-Y') }}<br><br>
+               <a class="btn btn-warning pull" href="{{ route('user.edit', ['id' => $user->id]) }}">Modifica</a>
                 
                 
         </div>

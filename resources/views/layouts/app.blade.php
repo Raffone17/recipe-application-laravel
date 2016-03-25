@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Recipes World</title>
+    <title>{{ $site_name=App\Setting::first()->site_name }}</title>
 
     <!-- Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
@@ -13,7 +13,7 @@
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{asset('assets/css/theme1.min.css',true)}}" rel="stylesheet" type='text/css'>
+    <link href="{{asset('assets/css/theme'.App\Setting::first()->theme.'.min.css',true)}}" rel="stylesheet" type='text/css'>
     <link href="{{asset('assets/css/style.css',true)}}" rel="stylesheet" type='text/css'>
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
@@ -42,7 +42,7 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    Ricette
+                    {{ $site_name }}
                 </a>
             </div>
 
@@ -80,6 +80,9 @@
 
                             <ul class="dropdown-menu" role="menu">
                                  <li><a href="{{ route('user.show',['id' => Auth::id()]) }}"><i class="glyphicon glyphicon-user"></i> Dettagli utente</a></li>
+                                 @if (Auth::user()->isAdmin())
+                                 <li><a href="{{ route('admin.index') }}"><i class="glyphicon glyphicon-wrench"></i> Amministrazione </a></li>
+                                 @endif
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                                
                             </ul>
