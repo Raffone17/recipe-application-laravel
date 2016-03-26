@@ -313,9 +313,12 @@ class RecipeController extends Controller
                         
                     $destroy_inToRecipe->delete();
                 }
+                if(file_exists('assets/img/recipe/'.$recipe->id.'.jpg')){
+                    unlink('assets/img/recipe/'.$recipe->id.'.jpg');
+                }
                 $recipe->delete();
                 if( Auth::user()->isAdmin() ){
-                    return redirect()->route('admin.index')->with('status', 'Hai eliminato la riccetta con successo!');
+                    return redirect()->route('admin.recipe')->with('status', 'Hai eliminato la riccetta con successo!');
                 }else{
                     return redirect()->route('recipe.index')->with('status', 'Hai eliminato la riccetta con successo!');
                 }
@@ -324,7 +327,7 @@ class RecipeController extends Controller
             }
         }else{
              if( Auth::user()->isAdmin() ){
-                 return redirect()->route('admin.index')->with('status-warning', 'Ricetta non trovata!');
+                 return redirect()->route('admin.recipe')->with('status-warning', 'Ricetta non trovata!');
              }else{
                 return redirect()->route('recipe.index')->with('status-warning', 'Ricetta non trovata!');
              }

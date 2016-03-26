@@ -15,8 +15,8 @@
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{{asset('assets/css/sb-admin.css',true)}}" rel="stylesheet">
-    <link href="{{asset('assets/css/style.css',true)}}" rel="stylesheet" type='text/css'>
+    <link href="{{asset('assets/css/sb-admin.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type='text/css'>
 
     <!-- Morris Charts CSS -->
     <link href="{{asset('assets/css/plugins/morris.css')}}" rel="stylesheet">

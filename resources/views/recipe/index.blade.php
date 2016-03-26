@@ -36,9 +36,9 @@
                            <div class="col-sm-4">
                                <div class="recipe-box">
                                       @if (file_exists('assets/img/recipe/'.$recipe->id.'.jpg'))
-                                <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg',true )}}" alt="recipe image" class="img-responsive " />
+                                <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg' )}}" alt="recipe image" class="img-responsive " />
                                 @else
-                                <img src="{{asset('assets/img/recipe/default.png',true )}}" alt="recipe image" class="img-responsive " />
+                                <img src="{{asset('assets/img/recipe/default.png' )}}" alt="recipe image" class="img-responsive " />
                                 @endif
                                 
                                 <h4 class="media-heading"> {{ $recipe->title }}</h4>
