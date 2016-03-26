@@ -110,7 +110,7 @@ class UserController extends Controller
         if($user != null && $user->id == Auth::id() || Auth::user()->isAdmin()){
             $user->name = $request->name;
             $user->email = $request->email;
-            if(isset($request->password)){
+            if(isset($request->password) && !empty($request->password)){
                 if($request->password == $request->password2){
                     $user->password = bcrypt($request->password);
                     

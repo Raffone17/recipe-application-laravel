@@ -29,7 +29,7 @@ if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
 						  
 						    <select id="category" name="category" class="form-control">
 						    	@foreach ($categories as $category)
-						    	<option value="{{$category->name}}">{{ucfirst($category->name)}}</option>
+						    	<option value="{{$category->id}}">{{ucfirst($category->name)}}</option>
 						      	@endforeach
 						    </select>
 					</div>

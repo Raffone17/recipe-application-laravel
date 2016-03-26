@@ -21,7 +21,12 @@ if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
        			 <div class="form-group col-sm-8">
        			     <label class="control-label" for="title"><--Immagine attuale</label>
        			     <div class="col-sm-8">
-       			         <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg')}}" alt="recipe image" class="img-responsive img-thumbnail" />
+       			     	@if (file_exists('assets/img/recipe/'.$recipe->id.'.jpg'))
+                            <img src="{{asset('assets/img/recipe/'.$recipe->id.'.jpg')}}" alt="recipe image" class="img-responsive img-thumbnail" />
+                        @else
+                            <img src="{{asset('assets/img/recipe/default.png')}}" alt="recipe image" class="img-responsive img-thumbnail" />
+                        @endif
+       			        
        			     </div>
        			     <hr>
        			 	 <div class="col-sm-4">
@@ -33,8 +38,8 @@ if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
 						  
 						    <select id="category" name="category" class="form-control">
 						    	@foreach ($categories as $category)
-						    	<option value="{{$category->name}}" 
-						    	@if($category->name == App\Category::findOrFail($recipe->category_id)->name)
+						    	<option value="{{$category->id}}" 
+						    	@if($category->name == $recipe->category->name)
 						    	selected
 						    	@endif
 						    	>{{ucfirst($category->name)}}</option>
@@ -69,6 +74,15 @@ if(strpos(URL::previous(), 'admin')!=false && Auth::check()){
 										
 					  <div class="col-sm-12" >
 					  	<label class="control-label" for="title">Lista ingredienti</label>
+					  	<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Puoi aggiungere ingredienti dalla lista, o scriverne direttamente di nuovi qua sotto!"> ? </button>
+					  	<div class="col-sm-3 pull-right">
+						  	<select id="ingredient-list" name="ingredient-list" class="form-control">
+							    	@foreach ($ingredients as $ingredient)
+							    	<option value="{{$ingredient->name}}">{{ucfirst($ingredient->name)}}</option>
+							      	@endforeach
+							 </select>
+						</div>
+						<button type="button" id="button-ingredient" class="pull-right btn btn-warning">Aggiungi</button>
 						<input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Ingredienti" value="@foreach ($ingredients_to_recipes as $ingredient){{ $ingredient->ingredient->name.', ' }}@endforeach">
 						<p id="ingredients"></p>
 					  </div>

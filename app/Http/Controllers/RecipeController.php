@@ -23,6 +23,7 @@ class RecipeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     
     protected $paginate;
     
     public function __construct()
@@ -83,10 +84,8 @@ class RecipeController extends Controller
         $recipe = new Recipe;
         $recipe->title = $request->title;
         $recipe->description = $request->description;
-        
-        $category = Category::where('name',$request->category)->first();
        
-        $recipe->category_id = $category->id;
+        $recipe->category_id = $request->category;
         
         $recipe->user_id = Auth::id();
         $recipe->difficult = $request->difficult;
@@ -173,10 +172,12 @@ class RecipeController extends Controller
     {
         $recipe= Recipe::find($id);
         $categories = Category::all();
+        $ingredients = Ingredient::orderBy('name')->get();
         if($recipe != null){
             $ingredients_to_recipes = Recipe::find($id)->ingredient_to_recipes;
             if(Auth::id()==$recipe->user_id || Auth::user()->isAdmin() ){
-                return view('recipe.edit' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes, 'categories' => $categories]);
+                return view('recipe.edit' ,['recipe' => $recipe, 'ingredients_to_recipes' => $ingredients_to_recipes, 'categories' => $categories,
+                'ingredients' => $ingredients]);
             }else{
                 return redirect()->route('recipe.index')->with('status-warning', 'Non hai i permessi per modificare questa ricetta!');
             }
@@ -211,11 +212,10 @@ class RecipeController extends Controller
             $recipe->title = $request->title;
             $recipe->description = $request->description;
             
-            $category = Category::where('name',$request->category)->first();
            
-            $recipe->category_id = $category->id;
+            $recipe->category_id = $request->category;
             
-            //$recipe->user_id = Auth::id();
+           
             $recipe->difficult = $request->difficult;
             
             $recipe->save();
@@ -229,18 +229,16 @@ class RecipeController extends Controller
                     
                           unset($ingredients[$key]);
                  }
-            print_r($ingredients);
             
             foreach($ingredient_to_recipes as $ingredient_to_recipe){
                 
-                $ingredient_name = Ingredient::find($ingredient_to_recipe->ingredient_id);
             
          
-                if(($key=array_search($ingredient_name->name,$ingredients)) !== false){
+                if(($key=array_search($ingredient_to_recipe->ingredient->name,$ingredients)) !== false){
                         
                           unset($ingredients[$key]);
                     }else{
-                      $destroy_inToRecipe= Ingredient_to_recipe::find($ingredient_to_recipe->id);
+                      $destroy_inToRecipe = Ingredient_to_recipe::find($ingredient_to_recipe->id);
                     
                      $destroy_inToRecipe->delete();
                 }
