@@ -57,7 +57,7 @@ class AdminController extends Controller
     public function ingredientStore(Request $request)
     {
        $this->validate($request, [
-        'name' => 'required | min:3',
+        'name' => 'required | between:3,255',
 
         ]);
         if( Ingredient::where("name",$request->name)->count() == 0 ){
@@ -86,7 +86,7 @@ class AdminController extends Controller
     }
     public function ingredientUpdate(Request $request, $id){
         $this->validate($request, [
-            'name' => 'required | min:3'
+            'name' => 'required | between:3,255'
             ]);
             
         $ingredient = Ingredient::find($id);
@@ -151,7 +151,7 @@ class AdminController extends Controller
     }
     public function categoryUpdate(Request $request, $id){
         $this->validate($request, [
-            'name' => 'required | min:3'
+            'name' => 'required | between:3,255'
             ]);
             
         $category = Category::find($id);
@@ -192,7 +192,7 @@ class AdminController extends Controller
     public function categoryStore(Request $request)
     {
        $this->validate($request, [
-        'name' => 'required | min:3',
+        'name' => 'required | between:3,255',
 
         ]);
         if( Category::where("name",$request->name)->count() == 0 ){
@@ -220,7 +220,7 @@ class AdminController extends Controller
     {
         
          $this->validate($request, [
-            'site_name' => 'required | min:3',
+            'site_name' => 'required | between:3,255',
             'paginate_recipe' => 'required | integer | between:3,30',
             'paginate_admin' => 'required | integer | between:5,50',
             'theme' => 'required | integer | between:1,3',

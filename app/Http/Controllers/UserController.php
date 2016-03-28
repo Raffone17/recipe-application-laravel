@@ -57,6 +57,7 @@ class UserController extends Controller
         if($user != null){
             
             $recipes = User::find($id)->recipes;
+          
             
             return view('user.show' ,['user' => $user,'recipes' => $recipes]);
             
@@ -99,8 +100,8 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-        'name' => 'required | min:3',
-        'email' => 'required | email | min:6',
+        'name' => 'required | between:3,255',
+        'email' => 'required | email | between:5,255',
         'password' => 'min:5',
         ]);
         

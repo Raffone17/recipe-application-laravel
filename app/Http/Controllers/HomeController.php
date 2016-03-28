@@ -27,8 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recipes= Recipe::all()->take(100);
+        $recipes= Recipe::orderBy('id','desc')->get()->take(100);
         $categories = Category::all();
+        
+       
         
         return view('home' ,['recipes' => $recipes, 'categories' => $categories]);
     }

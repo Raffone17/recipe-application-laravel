@@ -32,6 +32,7 @@
          <div class="col-sm-12 text-center">
          <h3> {{ ucfirst($category->name) }} :</h3>
          </div>
+        
      @foreach ($recipes as $recipe)
                             
         @if ( $recipe->category->name == $category->name )                  

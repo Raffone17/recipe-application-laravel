@@ -35,7 +35,7 @@ class RecipeController extends Controller
      
     public function index()
     {
-        $recipes = Recipe::paginate($this->paginate);
+        $recipes = Recipe::orderBy('id','desc')->paginate($this->paginate);
       
        
        
@@ -71,7 +71,7 @@ class RecipeController extends Controller
         
         
         $this->validate($request, [
-        'title' => 'required | min:3',
+        'title' => 'required | between:3,255',
         'description' => 'required | min:10',
         'category' => 'required',
         'difficult' => 'required',
@@ -200,7 +200,7 @@ class RecipeController extends Controller
     public function update(Request $request, $id)
     {
          $this->validate($request, [
-        'title' => 'required | min:3 ',
+        'title' => 'required | between:3,255 ',
         'description' => 'required | min:10',
         'category' => 'required',
         'difficult' => 'required',

@@ -29,7 +29,7 @@ class SearchController extends Controller
     {   
    
          $this->validate($request, [
-             'search' => 'required | min:3'
+             'search' => 'required | between:3,50'
              ]);
              
         $category = Category::where('name', $request->search )->first();
@@ -37,7 +37,7 @@ class SearchController extends Controller
         
         if($category != null){
             
-            $recipes = Recipe::where('category_id',$category->id)->paginate($this->paginate);
+            $recipes = Recipe::where('category_id',$category->id)->orderBy('id','desc')->paginate($this->paginate);
            
             $recipes->appends(['search' => $request->search])->links();
             
@@ -46,7 +46,7 @@ class SearchController extends Controller
         
         }else if($user != null){
             
-            $recipes = Recipe::where('user_id',$user->id)->paginate($this->paginate);
+            $recipes = Recipe::where('user_id',$user->id)->orderBy('id','desc')->paginate($this->paginate);
             
             $recipes->appends(['search' => $request->search])->links();
             
@@ -56,7 +56,7 @@ class SearchController extends Controller
         }
         else{
             
-            $recipes = Recipe::where('title', 'like', '%'.$request->search.'%')->paginate($this->paginate);
+            $recipes = Recipe::where('title', 'like', '%'.$request->search.'%')->orderBy('id','desc')->paginate($this->paginate);
             
             $recipes->appends(['search' => $request->search])->links();
             
@@ -78,7 +78,7 @@ class SearchController extends Controller
         
         
          $this->validate($request, [
-             'ingredient' => 'required | min:3'
+             'ingredient' => 'required | between:3,50'
              ]);
              
     
@@ -90,7 +90,7 @@ class SearchController extends Controller
                     
                     $query->where('name', 'like', '%'.$request->ingredient.'%');
                 });
-            })->paginate($this->paginate);
+            })->orderBy('id','desc')->paginate($this->paginate);
 
         $recipes->appends(['ingredient' => $request->ingredient])->links();
         

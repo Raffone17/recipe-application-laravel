@@ -48,8 +48,8 @@ if(strpos(URL::previous(),  'admin')!=false && Auth::check()){
                                     
                                 </div>
                                <div class="description-box2">
-                                
-                                    {{ $recipe->description }}
+                                   
+                                    {!! nl2br(e($recipe->description)) !!}
                                
                                </div>
                                <hr>
